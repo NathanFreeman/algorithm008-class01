@@ -18,11 +18,18 @@ public:
         }
 
         for (string word; in >> word; ++i) {
-            if (i == n || p2i[pattern[i]] != w2i[word])
+            //"abba", str = "dog cat cat dog"
+            // 1.  a对应的1，dog对应1
+            // 2.  b对应的2，cat对应2
+            // 3.  b对应的3，cat对应3
+            // 4.  b对应的4，cat对应4
+
+            // a出现多少次，dog也要出现多少次
+            if (i == n || p2i[pattern[i]] != w2i[word])  // 如果a对应数值和word对应的数值不一样，那么肯定是错的
                 return false;
             p2i[pattern[i]] = w2i[word] = i + 1;
         }
-        return i == n; // 如果pattern比
+        return true;
     }
 };
 
