@@ -3,49 +3,45 @@
 
 using namespace std;
 
-class SlideQueue {
-    deque<pair<int, int>> s_queue;
+class Monoquque {
+    deque<pair<int, int>> m_deque;
 
 public:
     void push(int val) {
-        int count = 0; //判断多少个回合后被删
-        while (!s_queue.empty() && s_queue.back().first < val) {
-            count += s_queue.back().second + 1; // 第二个回合删除
-            s_queue.pop_back();
+        int count = 0;
+        while (!m_deque.empty() && m_deque.back().first < val) {
+            count += m_deque.back().second + 1;
+            m_deque.pop_back();
         }
-        s_queue.emplace_back(val, count);
+        m_deque.emplace_back(val, count);
     }
 
     int max() {
-        return s_queue.front().first;
+        return m_deque.front().first;
     }
 
     void pop() {
-        if (s_queue.front().second > 0) {
-            s_queue.front().second--; // 为了中间的能够撑过两个回合
+        if (m_deque.front().second > 0) {
+            m_deque.front().second--;
             return;
         }
-        s_queue.pop_front();
+        m_deque.pop_front();
     }
 };
 
 class Solution {
-public:
     vector<int> maxSlidingWindow(vector<int> &nums, int k) {
+        vector<int> results;
+        Monoquque mq;
+
         k = min(k, (int) nums.size());
-        vector<int> max;
-        SlideQueue queue;
-
         int i = 0;
-        for (; i < k - 1; ++i) {   // 除了数组的第一个元素经过一次滑动后会马上删除，其余的元素是会在滑动窗口停留两次
-            queue.push(nums[i]);
-        }
 
-        for (; i < nums.size(); ++i) {
-            queue.push(nums[i]);
-            max.push_back(queue.max());
-            queue.pop();
+        for (; i < k; ++i) {
+            mq.push(nums[i]);
+            results.push_back(mq.max());
+            mq.pop();
         }
-        return max;
+        return results;
     }
 };
