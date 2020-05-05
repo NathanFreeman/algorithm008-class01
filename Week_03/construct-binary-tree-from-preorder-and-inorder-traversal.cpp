@@ -1,19 +1,40 @@
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+
 class Solution {
 public:
-    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        int pos = 0;
-        return buildTree(preorder, pos, inorder, 0, inorder.size()-1);
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder)
+    {
+        unordered_map<int,int> m;
+        for(int i=0;i<inorder.size();i++)
+        {
+            m[inorder[i]] = i;
+        }
+
+        int prei = 0;
+
+        return Helper(preorder,m,0,inorder.size(),prei);
     }
 
-    TreeNode* buildTree(vector<int>& preorder, int& pos, vector<int>& inorder, int left, int right) {
-        if (pos >= preorder.size()) return 0;
-        int i = left;
-        for (i = left; i <= right; ++i) {
-            if (inorder[i] == preorder[pos]) break;
+    TreeNode* Helper(vector<int>& preorder,unordered_map<int,int>& m,int left,int right,int& prei)
+    {
+        if(left==right)
+        {
+            return NULL;
         }
-        TreeNode* node = new TreeNode(preorder[pos]);
-        if (left <= i-1) node->left = buildTree(preorder, ++pos, inorder, left, i-1);  // 左子树
-        if (i+1 <= right) node->right = buildTree(preorder, ++pos, inorder, i + 1, right);  // 右子树
-        return node;
+
+        TreeNode* root = new TreeNode(preorder[prei]);
+
+        auto it = m.find(preorder[prei]);
+        int temp = it->second;
+
+        prei++;
+
+        root->left = Helper(preorder,m,left,temp,prei);
+        root->right = Helper(preorder,m,temp+1,right,prei);
+
+        return root;
     }
 };
